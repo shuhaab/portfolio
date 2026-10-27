@@ -1,0 +1,31 @@
+---
+import { profile } from '../data/profile';
+---
+<div class="email-contact">
+  <a href={`mailto:${profile.email}`}>{profile.email}</a>
+  <button id="copy-email" data-email={profile.email} hidden>Copy email</button>
+</div>
+<p id="copy-status" class="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
+<script>
+  const button = document.querySelector<HTMLButtonElement>('#copy-email');
+  const status = document.querySelector<HTMLElement>('#copy-status');
+  if (button && status) {
+    let timer: ReturnType<typeof setTimeout>;
+    button.hidden = false;
+    button.addEventListener('click', async () => {
+      if (button.getAttribute('aria-disabled') === 'true') return;
+      clearTimeout(timer);
+      button.setAttribute('aria-disabled', 'true');
+      status.textContent = 'Copying…';
+      try {
+        await navigator.clipboard.writeText(button.dataset.email!);
+        status.textContent = 'Email copied.';
+      } catch {
+        status.textContent = 'Could not copy. Select the email address above or open the email link.';
+      } finally {
+        button.setAttribute('aria-disabled', 'false');
+        timer = setTimeout(() => { status.textContent = ''; }, 5000);
+      }
+    });
+  }
+</script>

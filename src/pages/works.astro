@@ -1,0 +1,18 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { projects } from '../data/projects';
+---
+<SiteLayout title="Works | Shuhaab Bhat" description="Four software projects by Shuhaab Bhat, from a campus employment portal to logistics, food delivery, and movie recommendations." active="works">
+  <h1>Projects</h1>
+  <div class="projects">
+    {projects.map(project => <article aria-labelledby={project.id}>
+      <div class="project-heading">
+        <h2 id={project.id}>{project.title}</h2>
+        <p class="date">{project.dateLabel}</p>
+      </div>
+      <p>{project.summary}</p>
+      <ul class="contributions">{project.contributions.map(item => <li>{item}</li>)}</ul>
+      <ul class="tags" aria-label="Technologies">{project.technologies.map(technology => <li>{technology}</li>)}</ul>
+    </article>)}
+  </div>
+</SiteLayout>

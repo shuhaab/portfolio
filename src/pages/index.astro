@@ -1,0 +1,41 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import EmailContact from '../components/EmailContact.astro';
+import { profile, experience, education, community } from '../data/profile';
+const sections = [
+  { title: 'Experience', entries: experience },
+  { title: 'Education', entries: education },
+  { title: 'Community', entries: community },
+];
+---
+<SiteLayout title="Shuhaab Bhat | Software Engineer" description="Shuhaab Bhat is a software engineer and Computer Science graduate based in Kuala Lumpur, Malaysia. Explore his background, projects, and contact details." active="info">
+  <section aria-labelledby="about-heading">
+    <h1 id="about-heading">About me</h1>
+    <div class="biography">
+      {profile.biography.map((paragraph, index) => {
+        const highlight = profile.biographyHighlights[index];
+        const [before, after] = paragraph.split(highlight);
+        return <p>{after === undefined ? paragraph : <>{before}<strong class={`accent-${index}`}>{highlight}</strong>{after}</>}</p>;
+      })}
+    </div>
+  </section>
+  <section aria-labelledby="contact-heading" class="contact-section">
+    <h2 id="contact-heading">Contact</h2>
+    <div class="contacts">
+      <a href={profile.github}>GitHub <span aria-hidden="true">↗</span></a>
+      <a href={profile.linkedIn}>LinkedIn <span aria-hidden="true">↗</span></a>
+      <EmailContact />
+    </div>
+  </section>
+  {sections.map(({ title, entries }) => <section aria-labelledby={`${title.toLowerCase()}-heading`}>
+    <h2 id={`${title.toLowerCase()}-heading`}>{title}</h2>
+    {entries.map(entry => <div class="timeline-row">
+      <p class="date">{entry.dateLabel}</p>
+      <div>
+        <h3>{entry.title} <span class="organisation">— {entry.organisation}</span></h3>
+        {'location' in entry && <p class="location">{entry.location}</p>}
+        <p class="entry-description">{entry.description}</p>
+      </div>
+    </div>)}
+  </section>)}
+</SiteLayout>
