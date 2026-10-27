@@ -2,29 +2,43 @@
 import { profile } from '../data/profile';
 ---
 <div class="email-contact">
-  <a href={`mailto:${profile.email}`}>{profile.email}</a>
-  <button id="copy-email" data-email={profile.email} hidden>Copy email</button>
+  <a href={`mailto:${profile.email}`} aria-label="Email Shuhaab Bhat"><span id="email-label">Email</span></a>
+  <button id="copy-email" type="button" data-email={profile.email} aria-label="Copy email" hidden>
+    <!-- Lucide clipboard-copy and clipboard-check, ISC license: /Lucide-LICENSE.txt -->
+    <svg class="clipboard-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M16 4h2a2 2 0 0 1 2 2v4M21 14H11m4-4-4 4 4 4" /></svg>
+    <svg class="clipboard-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2m1 10 2 2 4-4" /></svg>
+  </button>
 </div>
-<p id="copy-status" class="copy-status" role="status" aria-live="polite" aria-atomic="true"></p>
+<p id="copy-status" class="copy-status sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
 <script>
   const button = document.querySelector<HTMLButtonElement>('#copy-email');
   const status = document.querySelector<HTMLElement>('#copy-status');
-  if (button && status) {
+  const label = document.querySelector<HTMLElement>('#email-label');
+  if (button && status && label) {
     let timer: ReturnType<typeof setTimeout>;
+    const showCopied = (copied: boolean) => {
+      label.textContent = copied ? 'Done!' : 'Email';
+      button.querySelector<SVGElement>('.clipboard-copy')!.style.display = copied ? 'none' : '';
+      button.querySelector<SVGElement>('.clipboard-check')!.style.display = copied ? '' : 'none';
+    };
     button.hidden = false;
     button.addEventListener('click', async () => {
       if (button.getAttribute('aria-disabled') === 'true') return;
       clearTimeout(timer);
       button.setAttribute('aria-disabled', 'true');
+      showCopied(false);
+      status.classList.add('sr-only');
       status.textContent = 'Copying…';
       try {
         await navigator.clipboard.writeText(button.dataset.email!);
+        showCopied(true);
         status.textContent = 'Email copied.';
+        timer = setTimeout(() => { showCopied(false); status.textContent = ''; }, 5000);
       } catch {
-        status.textContent = 'Could not copy. Select the email address above or open the email link.';
+        status.classList.remove('sr-only');
+        status.textContent = `Could not copy. Email ${button.dataset.email} or select this address to copy it manually.`;
       } finally {
         button.setAttribute('aria-disabled', 'false');
-        timer = setTimeout(() => { status.textContent = ''; }, 5000);
       }
     });
   }

@@ -29,6 +29,8 @@ To disable Astro CLI telemetry, set `ASTRO_TELEMETRY_DISABLED=1` in your shell. 
 - `src/styles/global.css`: typography, both palettes, layout, responsive behavior.
 - `src/layouts/SiteLayout.astro`: shared navigation, metadata, footer.
 
+The theme button alternates Light and Dark, restoring saved choices or resolving OS appearance once per load. Email is a mailto link with a separate clipboard icon; a successful copy shows Done! for five seconds.
+
 The optional `biographyHighlights` phrases in the profile data control colored emphasis. A paragraph still renders in full if its phrase is absent.
 
 ## Verify
@@ -40,7 +42,7 @@ npx playwright install chromium webkit
 npm test
 ```
 
-Tests cover generated content and asset privacy, compressed size, canonical configuration and sitemap, navigation, 404 status, keyboard skip link, theme persistence and storage failures, clipboard outcomes and focus, no-JavaScript use, responsive reflow, enlarged text, external runtime requests, and automated accessibility checks. Browser tests run against the production preview in Chromium and WebKit. Safari-style link navigation uses Option+Tab in the WebKit keyboard test.
+Tests cover generated content and asset privacy, compressed size, canonical configuration and sitemap, navigation, 404 status, keyboard skip link, theme persistence and storage failures, clipboard outcomes and focus, no-JavaScript use, responsive reflow, enlarged text, external runtime requests, and automated accessibility checks. Browser tests run against an isolated production preview on port 4322 in Chromium and WebKit, leaving an existing development server on port 4321 alone. Safari-style link navigation uses Option+Tab in the WebKit keyboard test.
 
 Firefox is also configured: install it with `npx playwright install firefox` and run `npx playwright test --project=firefox`. Its test runtime could not open its temporary profile on this machine, so Firefox coverage remains unverified.
 

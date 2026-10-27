@@ -1,10 +1,6 @@
-<button class="theme-control" type="button" aria-label="Theme: System. Switch to Light mode." hidden>
+<button class="theme-control" type="button" aria-label="Theme: Light. Switch to Dark mode." hidden>
   <!-- Lucide icons, ISC license: /Lucide-LICENSE.txt -->
-  <svg data-theme-icon="system" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 2a7 7 0 1 0 10 10" />
-  </svg>
-  <svg data-theme-icon="light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none">
+  <svg data-theme-icon="light" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
     <circle cx="12" cy="12" r="4" />
     <path d="M12 2v2M12 20v2m-7.07-17.07 1.41 1.41m11.32 11.32 1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" />
   </svg>
@@ -15,19 +11,17 @@
 <script>
   const button = document.querySelector<HTMLButtonElement>('.theme-control');
   if (button) {
-    const modes = ['system', 'light', 'dark'];
-    const labels = ['System', 'Light', 'Dark'];
-    let mode = Math.max(0, modes.indexOf(document.documentElement.dataset.theme || 'system'));
+    let mode = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
     const render = () => {
-      button.setAttribute('aria-label', `Theme: ${labels[mode]}. Switch to ${labels[(mode + 1) % modes.length]} mode.`);
+      document.documentElement.dataset.theme = mode;
+      button.setAttribute('aria-label', `Theme: ${mode === 'light' ? 'Light. Switch to Dark' : 'Dark. Switch to Light'} mode.`);
       button.querySelectorAll<SVGElement>('[data-theme-icon]').forEach(icon => {
-        icon.style.display = icon.dataset.themeIcon === modes[mode] ? '' : 'none';
+        icon.style.display = icon.dataset.themeIcon === mode ? '' : 'none';
       });
     };
     button.addEventListener('click', () => {
-      mode = (mode + 1) % modes.length;
-      document.documentElement.dataset.theme = modes[mode];
-      try { localStorage.setItem('portfolio-theme', modes[mode]); } catch { /* Storage is optional. */ }
+      mode = mode === 'light' ? 'dark' : 'light';
+      try { localStorage.setItem('portfolio-theme', mode); } catch { /* Storage is optional. */ }
       render();
     });
     render();
