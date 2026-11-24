@@ -9,7 +9,7 @@
 * { box-sizing: border-box; }
 [hidden] { display: none !important; }
 html { background: var(--bg); color: var(--fg); }
-body { margin: 0 auto; max-width: 64rem; min-height: 100vh; padding: 1.68rem 1.12rem; display: flex; flex-direction: column; font: 1.05rem/1.575 'Public Sans', Arial, sans-serif; letter-spacing: .025em; overflow-wrap: anywhere; }
+body { margin: 0 auto; max-width: 64rem; min-height: 100vh; padding: 1.68rem 1.12rem; display: flex; flex-direction: column; font: 1.05rem/1.575 'Public Sans', Arial, sans-serif; letter-spacing: .025em; overflow-wrap: break-word; }
 a { color: inherit; text-decoration-thickness: 2px; text-underline-offset: 3px; }
 a:hover { background: var(--surface); }
 :focus-visible { outline: 2px solid var(--blue); outline-offset: 5px; }
@@ -26,22 +26,31 @@ button[aria-disabled='true'] { cursor: progress; }
 .theme-control { position: relative; display: flex; align-items: center; justify-content: center; padding: .28rem; border: 0; border-radius: 8px; color: #121110; background: light-dark(oklch(82.66% 0 0 / .3), oklch(45.3% 0 89.876 / .3)); backdrop-filter: blur(16px); }
 .theme-control svg { display: block; fill: rgb(255 255 255 / .75); transition: fill .3s ease-in-out; }
 .theme-control:hover svg { fill: oklch(75.8% .152 90.57); }
-@media (pointer: coarse) { .theme-control::before { content: ''; position: absolute; inset: -6px; } }
+@media (pointer: coarse) {
+  .theme-control::before { content: ''; position: absolute; inset: -6px; }
+  /* Grows the 24px copy button's touch area to 44px without changing its look. */
+  #copy-email { position: relative; }
+  #copy-email::before { content: ''; position: absolute; inset: -10px; }
+}
 @media (prefers-reduced-motion: reduce) { .theme-control svg { transition: none; } }
 main { margin: 1.68rem 0 2.24rem; flex: 1; }
 main:focus { outline: none; }
 section + section { margin-top: 2.24rem; }
 h1, section > h2 { margin: 0 0 1.12rem; border-bottom: 1px solid var(--rule); font: 400 2.3625rem/1.1667 'Bebas Neue', Impact, 'Arial Narrow', sans-serif; letter-spacing: .01em; padding-bottom: .12rem; }
 p { margin: 0 0 1.12rem; }
+/* Keep running text near 68 characters per line on wide screens. */
+.lede, .availability, .biography p, .entry-description, .projects article > p, .contributions { max-width: 68ch; }
 .biography p:last-child { margin-bottom: 0; }
-.accent-0 { color: var(--blue); }
-.accent-1 { color: var(--green); }
-.accent-2 { color: var(--red); }
-.accent-3 { color: var(--yellow); }
+.biography strong { color: var(--blue); }
+.lede { font-size: 1.2rem; line-height: 1.5; margin-bottom: .6rem; }
+.availability { font-weight: 700; margin-bottom: 1.4rem; }
+.availability::before { content: ''; display: inline-block; width: .55em; height: .55em; margin-right: .5em; border-radius: 50%; background: var(--green); vertical-align: .08em; }
 .contacts { display: flex; align-items: center; gap: .7rem 1.5rem; flex-wrap: wrap; }
 .contacts > a { display: inline-flex; align-items: baseline; gap: .2rem; white-space: nowrap; font-weight: 700; }
-.contact-arrow { position: relative; top: -.1em; flex-shrink: 0; }
-.email-contact { display: inline-flex; align-items: center; gap: .15rem; white-space: nowrap; font-weight: 700; }
+.link-arrow { position: relative; top: -.1em; flex-shrink: 0; }
+.email-contact { display: inline-flex; align-items: center; flex-wrap: wrap; gap: .15rem; max-width: 100%; font-weight: 700; }
+.email-contact a { min-width: 0; overflow-wrap: anywhere; }
+.copy-done { margin-left: .25rem; color: var(--muted); font-size: .875rem; font-weight: 400; }
 #copy-email { display: inline-flex; align-items: center; justify-content: center; width: 24px; height: 24px; padding: 0; border: 0; border-radius: 0; background: transparent; color: inherit; }
 #copy-email svg { flex-shrink: 0; }
 #copy-email:hover { color: var(--blue); }
@@ -57,6 +66,9 @@ h3 { font: inherit; font-weight: 700; margin: 0; }
 .projects article:last-child { border: 0; padding-bottom: 0; margin-bottom: 0; }
 .project-heading { margin-bottom: .9rem; }
 .project-heading h2 { margin: 0 0 .3rem; font-size: 1.25rem; line-height: 1.4; letter-spacing: 0; }
+.project-links { display: flex; flex-wrap: wrap; gap: .3rem 1.2rem; list-style: none; padding: 0; margin: .45rem 0 0; font-weight: 700; }
+.project-links a { display: inline-flex; align-items: baseline; gap: .2rem; white-space: nowrap; }
+.project-note { margin: .45rem 0 0; color: var(--muted); font-size: .91875rem; font-style: italic; }
 .projects article > p { margin-bottom: .75rem; }
 .contributions { color: var(--muted); font-size: .91875rem; padding-left: 1.2rem; margin: 0 0 1rem; }
 .contributions li + li { margin-top: .35rem; }
@@ -69,4 +81,9 @@ footer a { text-decoration: none; }
 .skip-link:focus { transform: translateY(0); }
 @media (max-width: 1023px) { .timeline-row { grid-template-columns: 1fr; gap: .3rem; } }
 @media (max-width: 767px) { .site-header { align-items: flex-start; flex-direction: column; gap: .7rem; } }
-@media (max-width: 639px) { .contacts { align-items: flex-start; flex-direction: column; gap: .8rem; } }
+@media (max-width: 639px) {
+  .contacts { align-items: flex-start; flex-direction: column; gap: .8rem; }
+  /* Put the organisation on its own line instead of breaking after the dash. */
+  .organisation { display: block; }
+  .organisation .separator { display: none; }
+}

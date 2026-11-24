@@ -30,8 +30,14 @@ test('build includes only intended public content and valid local assets', async
   }
   assert.ok(info.includes(profile.email));
   for (const paragraph of profile.biography) assert.ok(info.replace(/<[^>]*>/g, '').includes(paragraph.replaceAll("'", '&#39;')) || info.replace(/<[^>]*>/g, '').includes(paragraph));
-  assert.equal((works.match(/<article\b/g) || []).length, 4);
-  for (const project of projects) assert.ok(works.includes(project.title));
+  assert.equal((works.match(/<article\b/g) || []).length, projects.length);
+  for (const project of projects) {
+    assert.ok(works.includes(project.title));
+    for (const link of project.links) assert.ok(works.includes(`href="${link.href}"`), `Missing ${link.label} link for ${project.title}`);
+  }
+  const structuredData = JSON.parse(info.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)?.[1] ?? 'null');
+  assert.equal(structuredData?.['@type'], 'Person');
+  assert.deepEqual(structuredData.sameAs, [profile.github, profile.linkedIn]);
   const jsPaths = paths.filter(path => path.endsWith('.js'));
   let jsSize = 0;
   for (const path of jsPaths) jsSize += gzipSync(await readFile(path)).length;
