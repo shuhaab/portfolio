@@ -1,6 +1,6 @@
 # Shuhaab Bhat — portfolio
 
-Local implementation of [sd.md](sd.md). Two static Astro pages: Info (`/`) and Works (`/works/`). No account, backend, tracking, or external runtime requests. Public fonts are self-hosted with their licenses.
+Local implementation of [sd.md](sd.md). Two static Astro pages: Info (`/`) and Works (`/works/`). No account, backend, cookies, or third-party runtime requests. Builds on Vercel add cookie-free [Vercel Web Analytics](https://vercel.com/docs/analytics) (anonymous visit counts, served from the site's own domain); local and other builds leave it out. Public fonts are self-hosted with their licenses.
 
 ## Run
 
