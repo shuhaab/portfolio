@@ -1,14 +1,18 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
 import { projects } from '../data/projects';
 ---
-<SiteLayout title="Works | Shuhaab Bhat" description="Four software projects by Shuhaab Bhat, from a campus employment portal to logistics, food delivery, and movie recommendations." active="works">
+<SiteLayout title="Projects | Shuhaab Bhat" description="Five software projects by Shuhaab Bhat: a private in-browser file converter, a campus employment portal, and logistics, food delivery, and movie recommendation apps." active="works">
   <h1>Projects</h1>
   <div class="projects">
     {projects.map(project => <article aria-labelledby={project.id}>
       <div class="project-heading">
         <h2 id={project.id}>{project.title}</h2>
-        <p class="date">{project.dateLabel}</p>
+        <p class="date">{project.dateLabel} · {project.context}</p>
+        {project.links.length > 0
+          ? <ul class="project-links">{project.links.map(link => <li><a href={link.href}>{link.label}<span class="sr-only"> for {project.title}</span><ArrowIcon /></a></li>)}</ul>
+          : project.note && <p class="project-note">{project.note}</p>}
       </div>
       <p>{project.summary}</p>
       <ul class="contributions">{project.contributions.map(item => <li>{item}</li>)}</ul>

@@ -2,22 +2,24 @@
 import { profile } from '../data/profile';
 ---
 <div class="email-contact">
-  <a href={`mailto:${profile.email}`} aria-label="Email Shuhaab Bhat"><span id="email-label">Email</span></a>
+  <a href={`mailto:${profile.email}`}>{profile.email}</a>
   <button id="copy-email" type="button" data-email={profile.email} aria-label="Copy email" hidden>
     <!-- Lucide clipboard-copy and clipboard-check, ISC license: /Lucide-LICENSE.txt -->
     <svg class="clipboard-copy" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M8 4H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2M16 4h2a2 2 0 0 1 2 2v4M21 14H11m4-4-4 4 4 4" /></svg>
     <svg class="clipboard-check" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display: none"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" /><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2m1 10 2 2 4-4" /></svg>
   </button>
+  <!-- Visual confirmation only; the status region below announces it to screen readers. -->
+  <span class="copy-done" aria-hidden="true" hidden>Copied</span>
 </div>
 <p id="copy-status" class="copy-status sr-only" role="status" aria-live="polite" aria-atomic="true"></p>
 <script>
   const button = document.querySelector<HTMLButtonElement>('#copy-email');
   const status = document.querySelector<HTMLElement>('#copy-status');
-  const label = document.querySelector<HTMLElement>('#email-label');
-  if (button && status && label) {
+  const done = document.querySelector<HTMLElement>('.copy-done');
+  if (button && status && done) {
     let timer: ReturnType<typeof setTimeout>;
     const showCopied = (copied: boolean) => {
-      label.textContent = copied ? 'Done!' : 'Email';
+      done.hidden = !copied;
       button.querySelector<SVGElement>('.clipboard-copy')!.style.display = copied ? 'none' : '';
       button.querySelector<SVGElement>('.clipboard-check')!.style.display = copied ? '' : 'none';
     };

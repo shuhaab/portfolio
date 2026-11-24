@@ -5,11 +5,13 @@ export const profile = {
   email: 'shuhaabbhat@gmail.com',
   linkedIn: 'https://www.linkedin.com/in/shuhaabbhat/',
   github: 'https://github.com/shuhaab',
-  biographyHighlights: ['software engineer', 'web applications', 'Groofle', 'football'],
+  headline: 'Software engineer and Computer Science graduate based in Kuala Lumpur, Malaysia.',
+  availability: 'Open to software engineer roles — available now.',
+  // One phrase per biography paragraph, emphasised in the accent colour. Paragraphs without an entry render plainly.
+  biographyHighlights: ['React, Next.js, TypeScript, and Firebase', 'Groofle'],
   biography: [
-    "I'm Shuhaab Bhat, a software engineer and Computer Science graduate based in Kuala Lumpur, Malaysia.",
-    'I build web applications, with experience in React, Next.js, TypeScript, and Firebase. My projects range from a campus employment portal to a film and TV recommendation platform.',
-    'During my frontend development internship at Groofle, I worked on responsive interfaces, API integration, authentication, testing, and performance improvements.',
+    'I build web applications with React, Next.js, TypeScript, and Firebase. My projects range from a campus employment portal to a private, in-browser file converter and a film and TV recommendation platform.',
+    'During my front-end development internship at Groofle, I worked on responsive interfaces, API integration, authentication, testing, and performance improvements.',
     "Outside of coding, I enjoy playing and watching football. I've played for most of my life, and I also enjoy gaming and travelling.",
   ],
 };
@@ -19,14 +21,15 @@ export const experience = [{
   title: 'Front-End Web Development Intern',
   organisation: 'Groofle Pvt Ltd',
   location: 'Srinagar, India',
-  description: 'Built responsive interfaces and reusable components; integrated REST APIs and JWT authentication; improved loading behavior, validation, testing, and cross-browser reliability.',
+  description: 'Built responsive interfaces and reusable components; integrated REST APIs and JWT authentication; improved loading behaviour, validation, testing, and cross-browser reliability.',
 }];
 
 export const education = [{
-  dateLabel: 'Graduated',
+  dateLabel: '2023–2026',
   title: 'B.S. in Computer Science',
   organisation: 'Asia Pacific University',
-  description: 'Started November 2023.',
+  location: 'Kuala Lumpur, Malaysia',
+  description: 'Completed all degree requirements in 2026; degree to be conferred in April 2027.',
 }];
 
 export const community = [{

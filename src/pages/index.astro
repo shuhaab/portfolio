@@ -1,31 +1,45 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import EmailContact from '../components/EmailContact.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
 import { profile, experience, education, community } from '../data/profile';
 const sections = [
   { title: 'Experience', entries: experience },
   { title: 'Education', entries: education },
   { title: 'Community', entries: community },
 ];
+// Structured data so search engines can connect this page with the same person on GitHub and LinkedIn.
+const person = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.displayName,
+  jobTitle: profile.title,
+  ...(Astro.site && { url: Astro.site.href }),
+  address: { '@type': 'PostalAddress', addressLocality: 'Kuala Lumpur', addressCountry: 'MY' },
+  alumniOf: { '@type': 'CollegeOrUniversity', name: education[0].organisation },
+  sameAs: [profile.github, profile.linkedIn],
+};
 ---
-<SiteLayout title="Shuhaab Bhat | Software Engineer" description="Shuhaab Bhat is a software engineer and Computer Science graduate based in Kuala Lumpur, Malaysia. Explore his background, projects, and contact details." active="info">
+<SiteLayout title="Shuhaab Bhat | Software Engineer" description="Shuhaab Bhat is a software engineer and Computer Science graduate in Kuala Lumpur, Malaysia, open to software engineer roles. See his projects, experience, and contact details." active="info" jsonLd={person}>
+  <section aria-labelledby="intro-heading" class="intro">
+    <h1 id="intro-heading">{profile.displayName}</h1>
+    <p class="lede">{profile.headline}</p>
+    <p class="availability">{profile.availability}</p>
+    <h2 class="sr-only">Contact</h2>
+    <div class="contacts">
+      <a href={profile.github}>GitHub<ArrowIcon /></a>
+      <a href={profile.linkedIn}>LinkedIn<ArrowIcon /></a>
+      <EmailContact />
+    </div>
+  </section>
   <section aria-labelledby="about-heading">
-    <h1 id="about-heading">About me</h1>
+    <h2 id="about-heading">About</h2>
     <div class="biography">
       {profile.biography.map((paragraph, index) => {
         const highlight = profile.biographyHighlights[index];
-        const [before, after] = paragraph.split(highlight);
-        return <p>{after === undefined ? paragraph : <>{before}<strong class={`accent-${index}`}>{highlight}</strong>{after}</>}</p>;
+        const parts = highlight ? paragraph.split(highlight) : [paragraph];
+        return <p>{parts.length === 1 ? paragraph : <>{parts[0]}<strong>{highlight}</strong>{parts.slice(1).join(highlight)}</>}</p>;
       })}
-    </div>
-  </section>
-  <section aria-labelledby="contact-heading" class="contact-section">
-    <h2 id="contact-heading">Contact</h2>
-    <div class="contacts">
-      <!-- Lucide corner-right-up icons, ISC license: /Lucide-LICENSE.txt -->
-      <a href={profile.github}>GitHub<svg class="contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 9 5-5 5 5" /><path d="M4 20h7a4 4 0 0 0 4-4V4" /></svg></a>
-      <a href={profile.linkedIn}>LinkedIn<svg class="contact-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m10 9 5-5 5 5" /><path d="M4 20h7a4 4 0 0 0 4-4V4" /></svg></a>
-      <EmailContact />
     </div>
   </section>
   {sections.map(({ title, entries }) => <section aria-labelledby={`${title.toLowerCase()}-heading`}>
@@ -33,7 +47,7 @@ const sections = [
     {entries.map(entry => <div class="timeline-row">
       <p class="date">{entry.dateLabel}</p>
       <div>
-        <h3>{entry.title} <span class="organisation">— {entry.organisation}</span></h3>
+        <h3>{entry.title}<span class="organisation"><span class="separator"> — </span>{entry.organisation}</span></h3>
         {'location' in entry && <p class="location">{entry.location}</p>}
         <p class="entry-description">{entry.description}</p>
       </div>

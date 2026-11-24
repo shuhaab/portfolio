@@ -17,18 +17,18 @@ test('routes, navigation, focus, and genuine preview 404', async ({ page, browse
   await expect(page.getByRole('link', { name: 'Skip to content' })).toBeFocused();
   await page.keyboard.press('Enter');
   await expect(page.locator('main')).toBeFocused();
-  await page.getByRole('link', { name: 'Works', exact: true }).click();
-  await expect(page.locator('article')).toHaveCount(4);
-  await expect(page.getByRole('link', { name: 'Works', exact: true })).toHaveAttribute('aria-current', 'page');
+  await page.getByRole('link', { name: 'Projects', exact: true }).click();
+  await expect(page.locator('article')).toHaveCount(5);
+  await expect(page.getByRole('link', { name: 'Projects', exact: true })).toHaveAttribute('aria-current', 'page');
   await page.reload();
   await expect(page.getByRole('heading', { name: 'Projects', exact: true })).toBeVisible();
   await page.goBack();
-  await expect(page.getByRole('heading', { name: 'About me' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Shuhaab Bhat', level: 1 })).toBeVisible();
   await page.goForward();
-  await expect(page.locator('article')).toHaveCount(4);
+  await expect(page.locator('article')).toHaveCount(5);
   const response = await page.goto('/this-page-does-not-exist/');
   expect(response?.status()).toBe(404);
-  await expect(page.getByRole('link', { name: /Return to Info/ })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Back to home', exact: true })).toHaveAttribute('href', '/');
 });
 
 test('theme resolves once, alternates with keyboard and pointer, and persists', async ({ page }) => {
@@ -50,7 +50,7 @@ test('theme resolves once, alternates with keyboard and pointer, and persists', 
   await page.keyboard.press('Space');
   await expect(button).toHaveAccessibleName('Theme: Dark. Switch to Light mode.');
   await expect(page.locator('[data-theme-icon=dark]')).toBeVisible();
-  await page.getByRole('link', { name: 'Works', exact: true }).click();
+  await page.getByRole('link', { name: 'Projects', exact: true }).click();
   await expect(button).toHaveAccessibleName('Theme: Dark. Switch to Light mode.');
   await page.reload();
   await expect(button).toHaveAccessibleName('Theme: Dark. Switch to Light mode.');
@@ -111,11 +111,11 @@ test('contact links preserve their destinations and use compact decorative curve
     await expect(link.locator('svg')).toHaveAttribute('width', '16');
     expect(await link.locator('path').evaluateAll(paths => paths.map(path => path.getAttribute('d')))).toEqual(['m10 9 5-5 5 5', 'M4 20h7a4 4 0 0 0 4-4V4']);
   }
-  const link = page.getByRole('link', { name: 'Email Shuhaab Bhat' });
-  await expect(link).toHaveText('Email');
+  const link = page.getByRole('link', { name: 'shuhaabbhat@gmail.com', exact: true });
+  await expect(link).toHaveText('shuhaabbhat@gmail.com');
   await expect(link).toHaveAttribute('href', 'mailto:shuhaabbhat@gmail.com');
   await expect(link.locator('button')).toHaveCount(0);
-  await expect(page.locator('.email-contact')).not.toContainText('shuhaabbhat@gmail.com');
+  await expect(page.locator('.copy-done')).toBeHidden();
   await expect(page.getByRole('button', { name: 'Copy email' })).toHaveText('');
   await link.evaluate(element => element.addEventListener('click', event => {
     event.preventDefault();
@@ -143,16 +143,16 @@ for (const clipboard of ['success', 'failure', 'missing']) {
     await page.goto('/');
     await setTheme(page, 'Dark');
     const button = page.getByRole('button', { name: 'Copy email' });
-    const link = page.getByRole('link', { name: 'Email Shuhaab Bhat' });
+    const link = page.getByRole('link', { name: 'shuhaabbhat@gmail.com', exact: true });
     const status = page.getByRole('status');
     if (clipboard === 'success') {
-      await page.locator('.contact-section').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-dark-normal.png` });
+      await page.locator('.contacts').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-dark-normal.png` });
       await setTheme(page, 'Light');
-      await page.locator('.contact-section').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-light-normal.png` });
+      await page.locator('.contacts').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-light-normal.png` });
     }
     await button.focus();
     await page.keyboard.press('Enter');
-    await expect(link).toHaveText('Email');
+    await expect(link).toHaveText('shuhaabbhat@gmail.com');
     if (clipboard !== 'missing') {
       await expect(status).toHaveText('Copying…');
       await page.keyboard.press('Space');
@@ -165,26 +165,28 @@ for (const clipboard of ['success', 'failure', 'missing']) {
     await expect(link).toHaveAttribute('href', 'mailto:shuhaabbhat@gmail.com');
     await expect(page).toHaveURL('http://127.0.0.1:4322/');
     if (clipboard === 'success') {
-      await expect(link).toHaveText('Done!');
+      await expect(link).toHaveText('shuhaabbhat@gmail.com');
+      await expect(page.locator('.copy-done')).toHaveText('Copied');
+      await expect(page.locator('.copy-done')).toBeVisible();
       await expect(button.locator('.clipboard-check')).toBeVisible();
       await expect(button.locator('.clipboard-copy')).toBeHidden();
       await expect(status).toHaveClass(/sr-only/);
-      await page.locator('.contact-section').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-light-success.png` });
+      await page.locator('.contacts').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-light-success.png` });
       await setTheme(page, 'Dark');
-      await page.locator('.contact-section').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-dark-success.png` });
+      await page.locator('.contacts').screenshot({ path: `artifacts/contacts-${testInfo.project.name}-dark-success.png` });
       await page.clock.runFor(3000);
       await button.click();
       await page.clock.runFor(250);
       await expect(page.locator('html')).toHaveAttribute('data-copy-calls', '2');
       await page.clock.runFor(2500);
-      await expect(link).toHaveText('Done!');
+      await expect(page.locator('.copy-done')).toBeVisible();
       await page.clock.runFor(2500);
-      await expect(link).toHaveText('Email');
+      await expect(page.locator('.copy-done')).toBeHidden();
       await expect(button.locator('.clipboard-copy')).toBeVisible();
       await expect(button.locator('.clipboard-check')).toBeHidden();
       await expect(status).toBeEmpty();
     } else {
-      await expect(link).toHaveText('Email');
+      await expect(page.locator('.copy-done')).toBeHidden();
       await expect(button.locator('.clipboard-copy')).toBeVisible();
       await expect(button.locator('.clipboard-check')).toBeHidden();
       await expect(status).not.toHaveClass(/sr-only/);
@@ -197,13 +199,13 @@ test('content and navigation work without JavaScript', async ({ browser }) => {
   const context = await browser.newContext({ javaScriptEnabled: false, colorScheme: 'dark' });
   const page = await context.newPage();
   await page.goto('http://127.0.0.1:4322/');
-  await expect(page.getByRole('heading', { name: 'About me' })).toBeVisible();
-  await expect(page.getByRole('link', { name: 'Email Shuhaab Bhat' })).toBeVisible();
+  await expect(page.getByRole('heading', { name: 'Shuhaab Bhat', level: 1 })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'shuhaabbhat@gmail.com', exact: true })).toBeVisible();
   await expect(page.getByRole('button', { name: 'Copy email' })).toHaveCount(0);
   await expect(page.locator('.theme-control')).toBeHidden();
   expect(await page.locator('html').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(18, 17, 16)');
-  await page.getByRole('link', { name: 'Works', exact: true }).click();
-  await expect(page.locator('article')).toHaveCount(4);
+  await page.getByRole('link', { name: 'Projects', exact: true }).click();
+  await expect(page.locator('article')).toHaveCount(5);
   await context.close();
 });
 

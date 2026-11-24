@@ -4,8 +4,8 @@ import ThemeToggle from '../components/ThemeToggle.astro';
 import { profile } from '../data/profile';
 import '../styles/global.css';
 
-interface Props { title: string; description: string; active?: 'info' | 'works'; }
-const { title, description, active } = Astro.props;
+interface Props { title: string; description: string; active?: 'info' | 'works'; jsonLd?: Record<string, unknown>; }
+const { title, description, active, jsonLd } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
 // Vercel sets VERCEL=1 during its builds. Its analytics script only exists on Vercel, so other builds omit it.
 const analytics = process.env.VERCEL === '1';
@@ -28,8 +28,13 @@ const analytics = process.env.VERCEL === '1';
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.displayName} />
+    <meta name="twitter:card" content="summary" />
     {canonical && <link rel="canonical" href={canonical} />}
     {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="theme-color" content="#f1efee" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#121110" media="(prefers-color-scheme: dark)" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd).replaceAll('<', '\\u003c')} />}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preload" href="/fonts/public-sans-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
@@ -40,7 +45,7 @@ const analytics = process.env.VERCEL === '1';
       <a class="identity" href="/">{profile.displayName}</a>
       <nav aria-label="Main navigation">
         <a class="nav-info" href="/" aria-current={active === 'info' ? 'page' : undefined}>Info</a>
-        <a class="nav-works" href="/works/" aria-current={active === 'works' ? 'page' : undefined}>Works</a>
+        <a class="nav-works" href="/works/" aria-current={active === 'works' ? 'page' : undefined}>Projects</a>
         <ThemeToggle />
       </nav>
     </header>

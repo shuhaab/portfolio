@@ -24,14 +24,14 @@ To disable Astro CLI telemetry, set `ASTRO_TELEMETRY_DISABLED=1` in your shell. 
 
 ## Edit
 
-- `src/data/profile.ts`: biography, public contacts, experience, education, community.
-- `src/data/projects.ts`: four projects in the intended display order.
+- `src/data/profile.ts`: headline, availability, biography, public contacts, experience, education, community.
+- `src/data/projects.ts`: projects, newest first, each with a context line and Code / Live demo links (or a note when nothing is public).
 - `src/styles/global.css`: typography, both palettes, layout, responsive behavior.
 - `src/layouts/SiteLayout.astro`: shared navigation, metadata, footer.
 
-The theme button alternates Light and Dark, restoring saved choices or resolving OS appearance once per load. Email is a mailto link with a separate clipboard icon; a successful copy shows Done! for five seconds.
+The theme button alternates Light and Dark, restoring saved choices or resolving OS appearance once per load. The email address is shown as a mailto link with a separate clipboard icon; a successful copy shows a check and "Copied" for five seconds.
 
-The optional `biographyHighlights` phrases in the profile data control colored emphasis. A paragraph still renders in full if its phrase is absent.
+The optional `biographyHighlights` phrases (one per paragraph, in order) control coloured emphasis. A paragraph without a phrase renders plainly.
 
 ## Verify
 
