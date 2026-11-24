@@ -1,4 +1,5 @@
 ---
+import Analytics from '@vercel/analytics/astro';
 import ThemeToggle from '../components/ThemeToggle.astro';
 import { profile } from '../data/profile';
 import '../styles/global.css';
@@ -6,6 +7,8 @@ import '../styles/global.css';
 interface Props { title: string; description: string; active?: 'info' | 'works'; }
 const { title, description, active } = Astro.props;
 const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefined;
+// Vercel sets VERCEL=1 during its builds. Its analytics script only exists on Vercel, so other builds omit it.
+const analytics = process.env.VERCEL === '1';
 ---
 <!doctype html>
 <html lang="en">
@@ -43,5 +46,6 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     </header>
     <main id="main" tabindex="-1"><slot /></main>
     <footer><a href="/">{profile.displayName}</a><span>{new Date().getUTCFullYear()}</span></footer>
+    {analytics && <Analytics />}
   </body>
 </html>
